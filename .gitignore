@@ -1,12 +1,14 @@
 .idea
 limpaTAB.php
 *~
-*.pfx
-*.pem
+messdetector.txt
+src/Make2.php
+src/Tags
+src/NFe.php
+src/Tag.php
 config.json
 local
 vendor
-docs
 nbproject
 build
 composer.lock
