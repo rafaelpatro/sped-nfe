@@ -536,13 +536,13 @@ class Tools
         }
         $memmod = $this->modelo;
         $this->modelo = 65;
-        $uf = UFList::getUFByCode(
-            $dom->getElementsByTagName('cUF')->item(0)->nodeValue
-        );
+        $cUF = $dom->getElementsByTagName('cUF')->item(0)->nodeValue;
+        $tpAmb = $dom->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+        $uf = UFList::getUFByCode($cUF);
         $this->servico(
             'NfeConsultaQR',
             $uf,
-            $dom->getElementsByTagName('tpAmb')->item(0)->nodeValue
+            $tpAmb
         );
         $signed = QRCode::putQRTag(
             $dom,
@@ -550,7 +550,7 @@ class Tools
             $this->config->CSCid,
             $this->urlVersion,
             $this->urlService,
-            $this->getURIConsultaNFCe($uf)
+            $this->getURIConsultaNFCe($uf, $tpAmb)
         );
         $this->modelo = $memmod;
         return Strings::clearXmlString($signed);
@@ -562,20 +562,15 @@ class Tools
      * @param string $uf
      * @return string
      */
-    protected function getURIConsultaNFCe($uf)
+    protected function getURIConsultaNFCe($uf, $tpAmb)
     {
-        if ($this->versao < '4.00') {
-            return '';
-        }
-        //essa TAG existe no XML apenas para layout >= 4.x
-        //os URI estão em storage/uri_consulta_nfce.json
         $arr = json_decode(
             file_get_contents(
                 $this->pathwsfiles.'uri_consulta_nfce.json'
             ),
             true
         );
-        $std = json_decode(json_encode($arr[$this->tpAmb]));
+        $std = json_decode(json_encode($arr[$tpAmb]));
         return $std->$uf;
     }
     
